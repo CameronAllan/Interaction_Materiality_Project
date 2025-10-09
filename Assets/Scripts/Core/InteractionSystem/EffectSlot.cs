@@ -2,15 +2,26 @@ using UnityEngine;
 
 public class EffectSlot : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Effect _startingEffect;
+    public Effect CurrentEffect { get; private set; }
+
+    [SerializeField] private bool _specificDuration;
+    [SerializeField] private float _duration;
+
+    private void Awake()
     {
-        
+        //Kinda gross, but whatev
+        if (_startingEffect != null)
+            SetEffect(_startingEffect);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetEffect(Effect effect)
     {
-        
+        CurrentEffect = effect;
+    }
+
+    public void ClearEffect()
+    {
+        CurrentEffect = null;
     }
 }
