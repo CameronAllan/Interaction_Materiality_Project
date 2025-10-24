@@ -15,6 +15,12 @@ public class EffectSlot : MonoBehaviour
             SetEffect(_startingEffect);
     }
 
+    public void Play()
+    {
+        if(CurrentEffect != null)
+            CurrentEffect.Play();
+    }
+
     public void SetEffect(Effect effect)
     {
         CurrentEffect = effect;

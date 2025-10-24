@@ -5,15 +5,19 @@ using UnityEngine.EventSystems;
 
 public class ButtonInteraction : InteractionTarget, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private List<InteractionChain> ButtonDownEffects;
-    [SerializeField] private List<InteractionChain> ButtonUpEffects;
+
+    public override void SetupInteraction()
+    {
+        
+    }
 
     private void OnButtonDown()
     {
-        foreach (InteractionChain chain in ButtonDownEffects)
-        {
-            chain.Play();
-        }
+        if (DefaultEffects[0] != null)
+            DefaultEffects[0].Play();
+
+        if (AddedEffects[0] != null)
+            AddedEffects[0].Play();
     }
 
     private void OnButtonDownCallback()
@@ -23,10 +27,11 @@ public class ButtonInteraction : InteractionTarget, IPointerDownHandler, IPointe
 
     private void OnButtonUp()
     {
-        foreach (InteractionChain chain in ButtonUpEffects)
-        {
-            chain.Play();
-        }
+        if (DefaultEffects[1] != null)
+            DefaultEffects[1].Play();
+
+        if (AddedEffects[1] != null)
+            AddedEffects[1].Play();
     }
 
     private void OnButtonUpCallback()
@@ -44,4 +49,33 @@ public class ButtonInteraction : InteractionTarget, IPointerDownHandler, IPointe
     {
         OnButtonUp();
     }
+
+    #region Helpers
+
+    public override List<InteractionChain> GetDefaultInteractions()
+    {
+        List<InteractionChain> ret = new List<InteractionChain>();
+
+        //ret.AddRange(DefaultButtonDownEffects);
+        //ret.AddRange(DefaultButtonUpEffects);
+
+        return ret;
+    }
+
+    public override List<InteractionChain> BuildEmptyInteractionTrack(InteractionManager.InteractionTypes type)
+    {
+        return new List<InteractionChain>();
+    }
+
+    public override void AddInteractionTrack(List<InteractionChain> chains)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void RemoveInteractionTrack(List<InteractionChain> chains)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
 }

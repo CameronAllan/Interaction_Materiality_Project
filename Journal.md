@@ -32,3 +32,17 @@ World's most convoluted button is in - ended up going for an Effect class that l
 The button starts with default, uneditable effects that just move the pressable bit up and down on mouse events, then I'm thinking that I can just instantiate prefabs for new "effect tracks" like in a video editing software?
 
 
+## Friday, Oct 24th, 2025
+
+We're back, bay-bee
+
+### Design
+
+Put together a demo for the prototype deliv presentation for class yesterday. Having to crank out something that actually did the thing was good - I think the initial attempt was wayyy too complicated and I was coming at it the wrong way.
+I was initially thinking that the InteractionChain class would mimic the structure of the video-editing timeline ui, but now I think it's gonna essentially be the, like "columns", instead and keep all the different effects triggering on the same input/event/etc. 
+So far so good, but the first kinda case study (the button) is entirely based on input, and ideally I would like the users to be able to customize like, a lootbox/reward animation or something like that.
+
+### Dev
+
+Didn't even need to mess around with instantiating prefabs at the end of the day, I just have a bunch of gameobjects with the different effects on them attached to the InteractionManager and then the UI just makes/clears references.
+

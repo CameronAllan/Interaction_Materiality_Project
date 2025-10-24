@@ -6,15 +6,14 @@ using UnityEngine;
 public class ICDiscrete : InteractionChain
 {
     //This baby has a list of discrete interaction slots that all line up
-
-    [SerializeField] private List<EffectSlot> _slots;
-    [SerializeField] private List<string> _slotsNames;
+    //[SerializeField] private List<string> _slotsNames;
 
     protected override IEnumerator PlayCoroutine()
     {
         foreach(EffectSlot s in _slots)
         {
-            s.CurrentEffect.Play();
+            if(s != null)
+                s.Play();
 
             //yield return new WaitForSeconds(s.CurrentEffect.CurrentTime);
         }
@@ -34,4 +33,14 @@ public class ICDiscrete : InteractionChain
         throw new NotImplementedException();
     }
 
+    public override List<string> GetSlotNames() 
+    {
+        //return _slotsNames;
+        throw new NotImplementedException();
+    }
+
+    public List<EffectSlot> GetEffectSlots()
+    {
+        return _slots;
+    }
 }
