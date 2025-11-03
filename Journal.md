@@ -46,3 +46,20 @@ So far so good, but the first kinda case study (the button) is entirely based on
 
 Didn't even need to mess around with instantiating prefabs at the end of the day, I just have a bunch of gameobjects with the different effects on them attached to the InteractionManager and then the UI just makes/clears references.
 
+## Monday, Nov 3rd, 2025
+
+Uploading my first build here, the previous one wouldn't close unless you manually ended the task or closed the window, so I've thrown in some basic functionality for the benefit of anyone checking this out later.
+I've also gotta figure out all the physical aspects of how this project will be displayed for the final installation of the class at Fourth Space.
+
+### Design
+
+Alright didn't end up actually showing the prototype until last Thursday because we ran out of time the week of the 24th, but with the extra time I was able to throw in a bunch of different types of button to customize and I think people liked it.
+Biggest piece of feedback seems to be just sticking with the buttons and adding a whole bunch of variety to them, they are immediate and tactile (well, "tactile") in a way that a level-up animation or lootbox opening wouldn't be. Plus it keeps the scope tighter.
+I think maybe I incorporate some kind of simple analytics (or even just a CSV file) that lets visitors to the installation save their button, then maybe when you start the experience you have to rate a bunch of existing buttons? Give people inspo, and then also have something interesting to say about buttons at the end of all this?
+
+### Dev
+
+Okay, if we're keeping the focus on strictly buttons, then TECHNICALLY all the functionality is in, though it definitely looks and plays like butt. Once I figure out how to format laser cutting files to make a cabinet for this guy, I'll probably take a run at figuring out a visual identity, then some quality of life stuff for the UX.
+
+
+

@@ -11,6 +11,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
     [Header("Display Vars")]
     [SerializeField] private UIEffect _timelineVisibilityEffect;
     [SerializeField] private UIEffect _libraryVisibilityEffect;
+    [SerializeField] private GameObject _scrollTargetButtons;
 
     [SerializeField] private List<TextMeshProUGUI> _titleTexts;
 
@@ -137,11 +138,13 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
         {
             _timelineVisibilityEffect.isActive = false;
             _libraryVisibilityEffect.isActive = false;
+            _scrollTargetButtons.SetActive(false);
         }
         else
         {
             _timelineVisibilityEffect.isActive = true;
             _libraryVisibilityEffect.isActive = true;
+            _scrollTargetButtons.SetActive(true);
         }
     }
 }

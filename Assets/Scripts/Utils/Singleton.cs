@@ -15,7 +15,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         get {
             if (instance == null)
             {
-                instance = (T)FindObjectOfType(typeof(T));
+                instance = (T)FindFirstObjectByType(typeof(T));
                 if (instance == null)
                 {
                     return null;
