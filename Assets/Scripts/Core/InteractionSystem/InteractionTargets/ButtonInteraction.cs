@@ -36,7 +36,18 @@ public class ButtonInteraction : InteractionTarget, IPointerDownHandler, IPointe
 
     private void OnButtonUpCallback()
     {
+        //start a coroutine that waits until the OnButtonUp is done playing then triggers the Idle effects
+    }
 
+    private void OnStartIdle()
+    {
+        /*
+        if (DefaultEffects[0] != null)
+            DefaultEffects[0].Play();
+
+        if (AddedEffects[0] != null)
+            AddedEffects[0].Play();
+        */
     }
 
 

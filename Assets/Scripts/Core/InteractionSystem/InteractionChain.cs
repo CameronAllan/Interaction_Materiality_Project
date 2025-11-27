@@ -9,6 +9,7 @@ public abstract class InteractionChain : MonoBehaviour
     protected Coroutine _playRoutine;
 
     [SerializeField] protected List<EffectSlot> _slots;
+    [SerializeField] protected EffectSlot _effectSlotPrefab;
 
     public virtual void Play()
     {
@@ -30,6 +31,8 @@ public abstract class InteractionChain : MonoBehaviour
 
     public abstract void AddEffect();
 
+    public abstract void AddEffectSlot();
+
     public abstract void RemoveEffect();
 
     public EffectSlot TryGetSlotAtIndex(int index)
@@ -41,6 +44,11 @@ public abstract class InteractionChain : MonoBehaviour
         {
             return null;
         }
+    }
+
+    public List<EffectSlot> GetSlots()
+    {
+        return _slots;
     }
 
     public int GetSlotCount()

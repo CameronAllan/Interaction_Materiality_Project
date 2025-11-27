@@ -12,12 +12,14 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
     [SerializeField] private UIEffect _timelineVisibilityEffect;
     [SerializeField] private UIEffect _libraryVisibilityEffect;
     [SerializeField] private GameObject _scrollTargetButtons;
+    [SerializeField] private UIEffect _tabHolderEffect;
+    [SerializeField] private List<UIEffect> _tabEffects;
 
-    [SerializeField] private List<TextMeshProUGUI> _titleTexts;
 
-    [Header("Effect Tracks Vars")]
-    [SerializeField] private Transform _effectTracksHolder;
-    [SerializeField] private List<EffectTrackUI> _activeTrackUIs;
+    [Header("Effect Interactions Vars")]
+    [SerializeField] private List<EffectInteractionUI> _activeInteractionUIs;
+    [SerializeField] private InteractionManager.InteractionTypes _displayedInteraction;
+    [SerializeField] private InteractionManager.InteractionTypes _defaultInteractionType;
 
 
     [Header("Effect Library Vars")]
@@ -46,59 +48,24 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
         }
     }
 
-    public void DisplayInteractionTarget(InteractionTarget target)
+    public void DisplayInteractionTarget(InteractionTarget target, InteractionManager.InteractionTypes type = InteractionManager.InteractionTypes.Default)
     {
-        //This is actually upside down, a little bit - I think I'm going to have to refactor the InteractionChains to maybe live on the target?
-        //The "chains" are like columns in this graph when they should be rows, I'm over-complicating it
         SelectedEntry = null;
-
-        foreach(TextMeshProUGUI text in _titleTexts)
-        {
-            text.text = "";
-        }
-
-        //List<InteractionChain> defaults = target.GetDefaultInteractions();
         int targetEffectSlots = target.GetInteractionSlotCount();
-        List<string> slotName = target.GetSlotNames();
 
-        for (int x = 0; x < targetEffectSlots; x++)
+        if (type == InteractionManager.InteractionTypes.Default)
+            type = _defaultInteractionType;
+
+        for(int x = 0; x < targetEffectSlots; x++)
         {
-            if(x < _titleTexts.Count)
+            InteractionChain chain = target.TryGetAddedEffectByIndex(x);
+            if(x < _activeInteractionUIs.Count && chain != null)
             {
-               
-                _titleTexts[x].text = slotName[x];
+                _activeInteractionUIs[x].PopulateInteractionUI(chain, this);
             }
         }
 
-        foreach(EffectTrackUI track in _activeTrackUIs)
-        {
-            track.gameObject.SetActive(false);
-        }
-
-        int slotsDepth = target.GetInteractionDepth();
-
-        Debug.Log(slotsDepth + " = slotsDepth");
-
-        for(int y =  0; y < slotsDepth; y++)
-        {
-            List<EffectSlot> slots = new List<EffectSlot>();
-            for(int x = 0; x < targetEffectSlots; x++)
-            {
-                InteractionChain iChain = target.TryGetAddedEffectByIndex(x);
-                if(iChain != null)
-                {
-                    EffectSlot eSlot = iChain.TryGetSlotAtIndex(y);
-                    if(eSlot != null)
-                        slots.Add(eSlot);
-                }
-            }
-
-            if (y < _activeTrackUIs.Count)
-            {
-                _activeTrackUIs[y].gameObject.SetActive(true);
-                _activeTrackUIs[y].PopulateTrackUI(slots, this);
-            }
-        }
+        DisplayEffectCategory(type);
     }
 
     public void AddEffectTrack(InteractionManager.InteractionTypes type)
@@ -108,12 +75,14 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
 
     public void EntrySelected(EffectEntryUI entry)
     {
+        /*
         SelectedEntry = entry;
 
         foreach(EffectTrackUI track in _activeTrackUIs)
         {
             track.ClearEntries(entry);
         }
+        */
     }
 
     public void DeselectEntry()
@@ -139,12 +108,116 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
             _timelineVisibilityEffect.isActive = false;
             _libraryVisibilityEffect.isActive = false;
             _scrollTargetButtons.SetActive(false);
+            _tabHolderEffect.isActive = false;
+            StageAssetManager.Instance.CenterElementInView();
         }
         else
         {
             _timelineVisibilityEffect.isActive = true;
             _libraryVisibilityEffect.isActive = true;
+            _tabHolderEffect.isActive = true;
             _scrollTargetButtons.SetActive(true);
+            StageAssetManager.Instance.MoveElementToEditPosition();
         }
     }
+
+    public GameObject GetEffectSlotUIPrefab()
+    {
+        return _effectSlotPrefab;
+    }
+
+    #region Effect Category Sorting
+
+    public void DisplaySoundEffects()
+    {
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Sound);
+    }
+
+    public void DisplayAnimationEffects()
+    {
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Animation);
+    }
+
+    public void DisplayParticleEffects()
+    {
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Particle);
+    }
+
+    public void DisplayFeedbackEffects()
+    {
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Feedback);
+    }
+
+    public void DisplayEffectCategory(InteractionManager.InteractionTypes type)
+    {
+        DisplayTargetEffectsOfType(type);
+        DisplayLibraryEffectsOfType(type);
+
+        SelectInteractionTypeTab(type);
+    }
+
+    private void DisplayTargetEffectsOfType(InteractionManager.InteractionTypes type)
+    {
+        InteractionTarget target = InteractionManager.Instance.GetInteractionTarget();
+        int targetEffectSlots = target.GetInteractionSlotCount();
+
+        for (int x = 0; x < targetEffectSlots; x++)
+        {
+            InteractionChain chain = target.TryGetAddedEffectByIndex(x);
+            if (x < _activeInteractionUIs.Count && chain != null)
+            {
+                _activeInteractionUIs[x].FilterDisplayedEffects(type);
+            }
+        }
+    }
+
+    private void DisplayLibraryEffectsOfType(InteractionManager.InteractionTypes type)
+    {
+        foreach(EffectSelectUI ui in _activeEffectUIs)
+        {
+            Effect effect = ui.GetEffect();
+            if (effect == null)
+                return;
+
+            if(effect.InteractionType == type)
+            {
+                ui.gameObject.SetActive(true);
+            } else
+            {
+                ui.gameObject.SetActive(false);
+            }
+
+        }
+    }
+
+    private void SelectInteractionTypeTab(InteractionManager.InteractionTypes type)
+    {
+        foreach (UIEffect ui in _tabEffects)
+            ui.isActive = false;
+
+        switch (type)
+        {
+            //I know this is gross, but it works for now
+            default:
+            case InteractionManager.InteractionTypes.Sound:
+                if(0 < _tabEffects.Count)
+                    _tabEffects[0].isActive = true;
+                break;
+            case InteractionManager.InteractionTypes.Animation:
+                if (1 < _tabEffects.Count)
+                    _tabEffects[1].isActive = true;
+                break;
+            case InteractionManager.InteractionTypes.Particle:
+                if (2 < _tabEffects.Count)
+                    _tabEffects[2].isActive = true;
+                break;
+            case InteractionManager.InteractionTypes.Feedback:
+                if (3 < _tabEffects.Count)
+                    _tabEffects[3].isActive = true;
+                break;
+
+        }
+    }
+
+    #endregion
 }

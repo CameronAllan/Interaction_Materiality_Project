@@ -32,14 +32,14 @@ public class EffectTrackUI : MonoBehaviour
             if(x < _activeEntries.Count)
             {
                 _activeEntries[x].gameObject.SetActive(true);
-                _activeEntries[x].SetEffectSlot(track[x], this);
+                //_activeEntries[x].SetEffectSlot(track[x], this);
             }
         }
     }
 
     public void EntrySelected(EffectEntryUI entry)
     {
-        _parent.EntrySelected(entry);
+        //_parent.EntrySelected(entry);
     }
 
     public void ClearEntries(EffectEntryUI entry)

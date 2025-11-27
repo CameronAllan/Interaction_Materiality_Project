@@ -25,6 +25,11 @@ public class ICDiscrete : InteractionChain
 
     public override void AddEffect()
     {
+        
+    }
+
+    public override void AddEffectSlot()
+    {
         throw new NotImplementedException();
     }
 

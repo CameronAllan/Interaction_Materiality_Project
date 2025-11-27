@@ -1,9 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public abstract class InteractionTarget : MonoBehaviour
 {
+    public enum InteractionForms
+    {
+        None,
+        TwoD, 
+        ThreeD
+    }
+
     [SerializeField] private int _interactionInts;
     [SerializeField] private List<string> _interactionNames;
 

@@ -22,4 +22,9 @@ public class EffectSelectUI : MonoBehaviour
     {
         _parentUI.EffectSelected(_effect);
     }
+
+    public Effect GetEffect()
+    {
+        return _effect;
+    }
 }

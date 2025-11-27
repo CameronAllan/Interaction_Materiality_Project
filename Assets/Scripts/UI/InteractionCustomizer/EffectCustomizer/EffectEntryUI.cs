@@ -1,18 +1,21 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class EffectEntryUI : MonoBehaviour, IPointerClickHandler
+public class EffectEntryUI : MonoBehaviour //IPointerClickHandler
 {
-    [SerializeField] private EffectTrackUI _parent;
+    [SerializeField] private EffectInteractionUI _parent;
     [SerializeField] private EffectSlot _displayedSlot;
 
     [SerializeField] private GameObject _selectionMarker;
     [SerializeField] private Transform _effectDisplay;
     [SerializeField] private TextMeshProUGUI _effectName;
 
-    public void SetEffectSlot(EffectSlot slot, EffectTrackUI parent)
+    [SerializeField] private UIDropZone _dropZone;
+
+    public void SetEffectSlot(EffectSlot slot, EffectInteractionUI parent)
     {
         _parent = parent;
         _displayedSlot = slot;
@@ -54,9 +57,9 @@ public class EffectEntryUI : MonoBehaviour, IPointerClickHandler
         ClearDisplayEffect();
     }
 
-    private void SelectEntry()
+    public void SelectEntry()
     {
-        _parent.EntrySelected(this);
+        //_parent.EntrySelected(this);
         _selectionMarker.SetActive(true);
     }
 
@@ -64,9 +67,46 @@ public class EffectEntryUI : MonoBehaviour, IPointerClickHandler
     {
         _selectionMarker.SetActive(false);
     }
-
+    /*
     public void OnPointerClick(PointerEventData eventData)
     {
         SelectEntry();
     }
+    */
+
+    #region Listeners
+
+    public void OnDropZoneSelectionChanged(object sender, EventArgs e)
+    {
+
+        HandleDropZoneChange();
+    }
+
+    private void HandleDropZoneChange()
+    {
+        EffectSelectUI selectUI = _dropZone.currentDraggable.GetParent().GetComponent<EffectSelectUI>();
+        if(selectUI != null)
+        {
+            SetEffect(selectUI.GetEffect());
+        } else
+        {
+            ClearEffect();
+        }
+
+        DeselectEntry();
+    }
+
+    private void OnEnable()
+    {
+        if (_dropZone != null)
+            _dropZone.SelectionChanged += OnDropZoneSelectionChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (_dropZone != null)
+            _dropZone.SelectionChanged -= OnDropZoneSelectionChanged;
+    }
+
+    #endregion
 }

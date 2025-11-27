@@ -61,5 +61,21 @@ I think maybe I incorporate some kind of simple analytics (or even just a CSV fi
 
 Okay, if we're keeping the focus on strictly buttons, then TECHNICALLY all the functionality is in, though it definitely looks and plays like butt. Once I figure out how to format laser cutting files to make a cabinet for this guy, I'll probably take a run at figuring out a visual identity, then some quality of life stuff for the UX.
 
+## Thursday, Nov 27th, 2025
+
+Alright build #2, last one before showtime - I've implemented drag/drop and a little more pizazz around the button customization BUT we also have to make a shitload of effects for the live showing on Tuesday, and include the "button-rating" preamble, plus a "booth demo" mode where it goes into an idle state between sessions.
+
+Laser cutting and cabinet build was rough, all the shops booked up so I had to rough cut some framing 2x2s from home depot for some structural integrity and ended up just driving a bunch of wood screws through my nicely laser cut panels and screwing the bejesus out of it. It works-ish, I'll throw the images and pics of it at the exhibition up as a build when all's said and done.
+
+### Design
+
+Design's friggin over, brother, we gotta get this trainwreck rolling.
+
+### Dev
+
+Gotta figure out how we're gonna save/represent these potential button combinations as data - if I don't have a flash of inspo it's gonna be XML probably, and then just add ID fields to all the different effects. This is either gonna be incredibly straightforward or a huge pain.
+Need to figure out how to deal with ratings/de-duplicate identical user creations.
+Plus I need to tag effects that are meant for 2D vs. 3D buttons, etc. etc.
+
 
 

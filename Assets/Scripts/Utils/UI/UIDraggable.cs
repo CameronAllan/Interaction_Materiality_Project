@@ -8,12 +8,13 @@ using UnityEngine.EventSystems;
 public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     bool beingDragged;
+
+    [SerializeField] private GameObject _parent;
     public bool worldSpace;
     public bool interactable = true;
     public enum DraggableType
     {
-        Building,
-        Resource,
+        Default,
         UI
     }
     public DraggableType draggableType;
@@ -193,5 +194,10 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void Reset()
     {
         
+    }
+
+    public GameObject GetParent()
+    {
+        return _parent;
     }
 }
