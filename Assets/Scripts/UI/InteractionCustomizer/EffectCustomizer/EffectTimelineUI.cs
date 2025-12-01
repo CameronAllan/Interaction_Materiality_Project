@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +9,7 @@ using TMPro;
 public class EffectTimelineUI : Singleton<EffectTimelineUI>
 {
     public EffectEntryUI SelectedEntry;
+    [SerializeField] private InteractionTarget _displayedTarget;
 
     [Header("Display Vars")]
     [SerializeField] private UIEffect _timelineVisibilityEffect;
@@ -17,6 +20,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
 
 
     [Header("Effect Interactions Vars")]
+    [SerializeField] private GameObject _showCustomizerButton;
     [SerializeField] private List<EffectInteractionUI> _activeInteractionUIs;
     [SerializeField] private InteractionManager.InteractionTypes _displayedInteraction;
     [SerializeField] private InteractionManager.InteractionTypes _defaultInteractionType;
@@ -26,10 +30,33 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
     [SerializeField] private Transform _effectsHolder;
     [SerializeField] private List<EffectSelectUI> _activeEffectUIs;
 
+    [Header("Tutorial Blurb Vars")]
+    [SerializeField] private GameObject _blurbHolder;
+    [SerializeField] private TMPro.TextMeshProUGUI _blurbText_EN;
+    [SerializeField] private TMPro.TextMeshProUGUI _blurbText_FR;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _effectTrackPrefab;
     [SerializeField] private GameObject _effectSlotPrefab;
+
+    [Header("Submit Screen Vars")]
+    [SerializeField] private GameObject _submitButton;
+    [SerializeField] private GameObject _submitScreen;
+
+    [SerializeField] private TextMeshProUGUI _submitTextEN;
+    [SerializeField] private TextMeshProUGUI _submitTextFR;
+
+    [SerializeField] private float _endGameWaitTime = 2f;
+
+
+    public void SetupEditUI()
+    {
+        _submitButton.SetActive(true);
+        _submitScreen.SetActive(false);
+        _showCustomizerButton.SetActive(true);
+
+        ShowBlurb();
+    }
 
     public void PopulateEffectLibrary(List<Effect> allEffects)
     {
@@ -51,6 +78,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
     public void DisplayInteractionTarget(InteractionTarget target, InteractionManager.InteractionTypes type = InteractionManager.InteractionTypes.Default)
     {
         SelectedEntry = null;
+        _displayedTarget = target;
         int targetEffectSlots = target.GetInteractionSlotCount();
 
         if (type == InteractionManager.InteractionTypes.Default)
@@ -65,7 +93,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
             }
         }
 
-        DisplayEffectCategory(type);
+        DisplayEffectCategory(type, target);
     }
 
     public void AddEffectTrack(InteractionManager.InteractionTypes type)
@@ -118,6 +146,9 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
             _tabHolderEffect.isActive = true;
             _scrollTargetButtons.SetActive(true);
             StageAssetManager.Instance.MoveElementToEditPosition();
+
+            if (_blurbHolder.activeSelf)
+                HideBlurb();
         }
     }
 
@@ -126,32 +157,103 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
         return _effectSlotPrefab;
     }
 
+    #region Blurb Management
+
+    public void ShowBlurb()
+    {
+        if (GameManager.Instance.French)
+        {
+            _blurbText_EN.gameObject.SetActive(false);
+            _blurbText_FR.gameObject.SetActive(true);
+        } else
+        {
+            _blurbText_EN.gameObject.SetActive(true);
+            _blurbText_FR.gameObject.SetActive(false);
+        }
+
+        _blurbHolder.SetActive(true);
+    }
+
+    public void HideBlurb()
+    {
+        _blurbHolder.SetActive(false);
+    }
+
+    #endregion
+
+    #region Submit Screen
+
+    public void ShowSubmitConfirm()
+    {
+        _showCustomizerButton.SetActive(false);
+        _submitButton.gameObject.SetActive(false);
+        _submitScreen.gameObject.SetActive(true);
+
+        if (GameManager.Instance.French)
+        {
+            _submitTextEN.gameObject.SetActive(false);
+            _submitTextFR.gameObject.SetActive(true);
+        }
+        else
+        {
+            _submitTextEN.gameObject.SetActive(true);
+            _submitTextFR.gameObject.SetActive(false);
+        }
+    }
+
+    public void HideSubmitConfirm()
+    {
+        _showCustomizerButton.SetActive(true);
+        _submitButton.gameObject.SetActive(true);
+        _submitScreen.gameObject.SetActive(false);
+    }
+
+    public void CompleteButtonEdit()
+    {
+        //Hide the submit screen, start the SubmitAnim
+        _submitScreen.gameObject.SetActive(false);
+
+        StageAssetManager.Instance.SubmitElement();
+        StartCoroutine(SubmitAnim());
+    }
+
+    IEnumerator SubmitAnim()
+    {
+        //wait for 
+        yield return new WaitForSeconds(_endGameWaitTime);
+
+        GameManager.Instance.TitleScreen();
+        yield break;
+    }
+
+    #endregion
+
     #region Effect Category Sorting
 
     public void DisplaySoundEffects()
     {
-        DisplayEffectCategory(InteractionManager.InteractionTypes.Sound);
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Sound, _displayedTarget);
     }
 
     public void DisplayAnimationEffects()
     {
-        DisplayEffectCategory(InteractionManager.InteractionTypes.Animation);
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Animation, _displayedTarget);
     }
 
     public void DisplayParticleEffects()
     {
-        DisplayEffectCategory(InteractionManager.InteractionTypes.Particle);
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Particle, _displayedTarget);
     }
 
     public void DisplayFeedbackEffects()
     {
-        DisplayEffectCategory(InteractionManager.InteractionTypes.Feedback);
+        DisplayEffectCategory(InteractionManager.InteractionTypes.Feedback, _displayedTarget);
     }
 
-    public void DisplayEffectCategory(InteractionManager.InteractionTypes type)
+    public void DisplayEffectCategory(InteractionManager.InteractionTypes type, InteractionTarget target)
     {
         DisplayTargetEffectsOfType(type);
-        DisplayLibraryEffectsOfType(type);
+        DisplayLibraryEffectsOfType(type, target);
 
         SelectInteractionTypeTab(type);
     }
@@ -171,7 +273,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
         }
     }
 
-    private void DisplayLibraryEffectsOfType(InteractionManager.InteractionTypes type)
+    private void DisplayLibraryEffectsOfType(InteractionManager.InteractionTypes type, InteractionTarget target)
     {
         foreach(EffectSelectUI ui in _activeEffectUIs)
         {
@@ -179,7 +281,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
             if (effect == null)
                 return;
 
-            if(effect.InteractionType == type)
+            if(effect.InteractionType == type && (effect.InteractionForm == target.Form || effect.InteractionForm == InteractionTarget.InteractionForms.None))
             {
                 ui.gameObject.SetActive(true);
             } else

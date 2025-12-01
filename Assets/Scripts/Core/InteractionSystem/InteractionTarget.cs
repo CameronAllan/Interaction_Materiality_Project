@@ -11,6 +11,7 @@ public abstract class InteractionTarget : MonoBehaviour
         TwoD, 
         ThreeD
     }
+    public InteractionForms Form;
 
     [SerializeField] private int _interactionInts;
     [SerializeField] private List<string> _interactionNames;

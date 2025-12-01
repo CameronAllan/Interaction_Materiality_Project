@@ -1,15 +1,19 @@
 using UnityEngine;
 
-public class RateButtonsState : MonoBehaviour
+public class RateButtonsState : GameState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public RateButtonsState(GameManager manager) : base(manager)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnStateEnter()
+    {
+        StageRatingManager.Instance.StartButtonRating();
+        UIManager.Instance.ShowButtonRateView();
+    }
+
+    public override void OnStateExit()
     {
         
     }

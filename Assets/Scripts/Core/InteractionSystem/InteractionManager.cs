@@ -27,13 +27,18 @@ public class InteractionManager : Singleton<InteractionManager>
     }
 
 
-    private void Start()
+    public void StartButtonCustomization()
     {
+        //TODO: Favourite Management -> Give every button an id then just copy all the effects over?
+
+        StageAssetManager.Instance.EnterEditMode();
+
+        EffectTimelineUI.Instance.PopulateEffectLibrary(_allEffects);
+        EffectTimelineUI.Instance.SetupEditUI();
+
         //grab the first interaction target in our array for now
         _interactionIndex = 0;
         SetInteractionTarget(_interactionIndex);
-
-        EffectTimelineUI.Instance.PopulateEffectLibrary(_allEffects);
 
     }
 

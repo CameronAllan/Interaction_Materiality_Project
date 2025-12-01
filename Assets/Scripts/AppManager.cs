@@ -7,9 +7,10 @@ public class AppManager : Singleton<AppManager>
 
     public void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
-        }
+        }*/
     }
 }

@@ -6,7 +6,11 @@ public class StageAssetManager : Singleton<StageAssetManager>
     //Movement Vars
     [SerializeField] private Vector3 _defaultPosition;
     [SerializeField] private Vector3 _customizePosition;
+    [SerializeField] private Vector3 _submitButtonPosition;
+    [SerializeField] private float _regularMoveSpeed = 2f;
+    [SerializeField] private float _submitMoveSpeed = 15f;
 
+    [Header("Debug Vars")]
     [SerializeField] private Vector3 _targetPosition;
     [SerializeField] private bool _isMoving;
     [SerializeField] private float _moveSpeed;
@@ -30,15 +34,33 @@ public class StageAssetManager : Singleton<StageAssetManager>
         }
     }
 
+    public void EnterEditMode()
+    {
+        _moveSpeed = _regularMoveSpeed;
+        _targetPosition = _defaultPosition;
+
+        transform.position = _defaultPosition;
+        _isMoving = false;
+    }
+
     public void CenterElementInView()
     {
+        _moveSpeed = _regularMoveSpeed;
         _targetPosition = _defaultPosition;
         _isMoving = true;
     }
 
     public void MoveElementToEditPosition()
     {
+        _moveSpeed = _regularMoveSpeed;
         _targetPosition = _customizePosition;
+        _isMoving = true;
+    }
+
+    public void SubmitElement()
+    {
+        _moveSpeed = _submitMoveSpeed;
+        _targetPosition = _submitButtonPosition;
         _isMoving = true;
     }
 }

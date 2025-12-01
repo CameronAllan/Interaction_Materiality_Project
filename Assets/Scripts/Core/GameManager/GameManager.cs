@@ -18,5 +18,28 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public bool French;
+
+    public void Awake()
+    {
+        GameState = new TitleState(this);
+    }
+
+    public void StartNewGame(bool inFrench)
+    {
+        French = inFrench;
+
+        GameState = new RateButtonsState(this);
+    }
+
+    public void EnterEditMode()
+    {
+        GameState = new BuildButtonsState(this);
+    }
+
+    public void TitleScreen()
+    {
+        GameState = new TitleState(this);
+    }
 
 }

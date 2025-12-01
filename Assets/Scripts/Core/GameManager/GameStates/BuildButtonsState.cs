@@ -1,15 +1,20 @@
 using UnityEngine;
 
-public class BuildButtonsState : MonoBehaviour
+public class BuildButtonsState : GameState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public BuildButtonsState(GameManager manager) : base(manager)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnStateEnter()
+    {
+        UIManager.Instance.ShowButtonBuildView();
+        InteractionManager.Instance.StartButtonCustomization();
+
+    }
+
+    public override void OnStateExit()
     {
         
     }
