@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class MoveEffect : MonoBehaviour
+public class MoveEffect : Effect
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Vector3 _targetLocalPos;
 
-    // Update is called once per frame
-    void Update()
+    public override void Play()
     {
-        
+        Transform target = InteractionManager.Instance.GetInteractionTarget().GetAnimRoot();
+
+        if (target != null)
+            target.localPosition = _targetLocalPos;
     }
 }
