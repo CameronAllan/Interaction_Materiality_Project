@@ -51,4 +51,14 @@ public class UIManager : Singleton<UIManager>
     }
 
     #endregion
+
+    //Also prob bad form but it's late
+    #region UI Getters
+
+    public RatingUI GetRatingUI()
+    {
+        return _buttonRateHolder;
+    }
+
+    #endregion
 }

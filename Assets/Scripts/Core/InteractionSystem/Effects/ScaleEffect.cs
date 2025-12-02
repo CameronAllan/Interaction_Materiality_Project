@@ -7,8 +7,10 @@ public class ScaleEffect : Effect
     public override void Play()
     {
         Transform target = InteractionManager.Instance.GetInteractionTarget().GetAnimRoot();
+        if (!StageAssetManager.Instance.gameObject.activeSelf)
+            target = StageRatingManager.Instance.CurrentRatingTarget.GetAnimRoot();
 
-        if(target != null )
+        if (target != null )
             target.localScale = new Vector3(_targetScale.x, _targetScale.y, _targetScale.z);
     }
 }

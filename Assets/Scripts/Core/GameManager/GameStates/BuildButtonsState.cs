@@ -16,6 +16,6 @@ public class BuildButtonsState : GameState
 
     public override void OnStateExit()
     {
-        
+        InteractionManager.Instance.EndButtonCustomization();
     }
 }

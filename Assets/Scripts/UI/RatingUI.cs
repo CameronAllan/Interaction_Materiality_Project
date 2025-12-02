@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class RatingUI : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class RatingUI : MonoBehaviour
     public void DisplayUI()
     {
         _currentRatings = new Dictionary<InteractionTarget, int>();
+
+        _ratingButtons = StageRatingManager.Instance.GetRatingTargets().ToList();
+
         foreach (InteractionTarget target in _ratingButtons)
         {
             _currentRatings.Add(target, 0);
@@ -59,6 +63,8 @@ public class RatingUI : MonoBehaviour
             ui.UnMark();
         }
 
+        _currentRating = rating;
+
         button.MarkSelected();
 
         if(!_submitButton.gameObject.activeSelf)
@@ -68,9 +74,9 @@ public class RatingUI : MonoBehaviour
     public void SubmitButtonRating()
     {
         if (!_currentRatings.ContainsKey(StageRatingManager.Instance.CurrentRatingTarget))
-        {
             _currentRatings.Add(StageRatingManager.Instance.CurrentRatingTarget, _currentRating);
-        }
+
+        _currentRatings[StageRatingManager.Instance.CurrentRatingTarget] = _currentRating;
 
         _submitButton.gameObject.SetActive(false);
         foreach (RatingButtonUI ui in _ratingUIButtons)
@@ -85,11 +91,13 @@ public class RatingUI : MonoBehaviour
     {
         int max = 0;
         InteractionTarget fave = null;
+
         foreach(KeyValuePair<InteractionTarget, int> entry in _currentRatings)
         {
             if(entry.Value > max)
             {
                 fave = entry.Key;
+                max = entry.Value;
             }
         }
         Favourite = fave;

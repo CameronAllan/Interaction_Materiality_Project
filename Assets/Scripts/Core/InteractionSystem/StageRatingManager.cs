@@ -11,6 +11,8 @@ public class StageRatingManager : Singleton<StageRatingManager>
     [SerializeField] private int _targetIndex;
     [SerializeField] private List<InteractionTarget> _ratingTargets;
 
+    [SerializeField] private Vector3 _twoDOffset;
+
     [Header("Rating Presentation Vars")]
     [SerializeField] private Vector3 _enterPosition;
     [SerializeField] private Vector3 _displayPosition;
@@ -23,7 +25,14 @@ public class StageRatingManager : Singleton<StageRatingManager>
             SimpleMover mover = t.gameObject.GetComponent<SimpleMover>();
             if (mover != null)
             {
-                mover.SnapToPosition(_enterPosition);
+                if(t.Form == InteractionTarget.InteractionForms.TwoD)
+                {
+                    mover.SnapToPosition(_enterPosition + _twoDOffset);
+                } else
+                {
+                    mover.SnapToPosition(_enterPosition);
+                }
+                    
             }
         }
 
@@ -38,7 +47,14 @@ public class StageRatingManager : Singleton<StageRatingManager>
             SimpleMover m = CurrentRatingTarget.gameObject.GetComponent<SimpleMover>();
             if(m != null)
             {
-                m.SetTargetPosition(_exitPosition);
+                if (t.Form == InteractionTarget.InteractionForms.TwoD)
+                {
+                    m.SnapToPosition(_exitPosition + _twoDOffset);
+                }
+                else
+                {
+                    m.SnapToPosition(_exitPosition);
+                }
             }
         }
 
@@ -47,7 +63,14 @@ public class StageRatingManager : Singleton<StageRatingManager>
         SimpleMover mover = CurrentRatingTarget.gameObject.GetComponent<SimpleMover>();
         if (mover != null)
         {
-            mover.SetTargetPosition(_displayPosition);
+            if (t.Form == InteractionTarget.InteractionForms.TwoD)
+            {
+                mover.SnapToPosition(_displayPosition + _twoDOffset);
+            }
+            else
+            {
+                mover.SnapToPosition(_displayPosition);
+            }
         }
     }
 
@@ -60,7 +83,8 @@ public class StageRatingManager : Singleton<StageRatingManager>
         } else
         {
             ResetRatingObjects();
-            GameManager.Instance.EnterEditMode();
+            UIManager.Instance.GetRatingUI().GoToBuildMode();
+            //GameManager.Instance.EnterEditMode();
         }
     }
 
@@ -72,8 +96,20 @@ public class StageRatingManager : Singleton<StageRatingManager>
             SimpleMover mover = t.gameObject.GetComponent<SimpleMover>();
             if (mover != null)
             {
-                mover.SnapToPosition(_enterPosition);
+                if (t.Form == InteractionTarget.InteractionForms.TwoD)
+                {
+                    mover.SnapToPosition(_enterPosition + _twoDOffset);
+                }
+                else
+                {
+                    mover.SnapToPosition(_enterPosition);
+                }
             }
         }
+    }
+
+    public List<InteractionTarget> GetRatingTargets()
+    {
+        return _ratingTargets;
     }
 }

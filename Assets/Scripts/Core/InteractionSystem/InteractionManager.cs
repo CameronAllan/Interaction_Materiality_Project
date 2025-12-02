@@ -6,6 +6,7 @@ public class InteractionManager : Singleton<InteractionManager>
 {
     [Header("Interaction Selection Vars")]
     [SerializeField] private List<InteractionTarget> _targetGOs;
+    [SerializeField] private InteractionTarget _favouriteCopy;
     [SerializeField] private List<Sprite> _interactionIcons;
 
     [Header("Current Interaction Vars")]
@@ -36,10 +37,34 @@ public class InteractionManager : Singleton<InteractionManager>
         EffectTimelineUI.Instance.PopulateEffectLibrary(_allEffects);
         EffectTimelineUI.Instance.SetupEditUI();
 
-        //grab the first interaction target in our array for now
-        _interactionIndex = 0;
+        //Get the favourite
+        if (UIManager.Instance.GetRatingUI().Favourite != null)
+        {
+            InteractionTarget fave = Instantiate(UIManager.Instance.GetRatingUI().Favourite.gameObject, StageAssetManager.Instance.transform).GetComponent<InteractionTarget>();
+            SimpleMover mover = fave.gameObject.GetComponent<SimpleMover>();
+            Destroy(mover);
+
+            fave.transform.localPosition = new Vector3(0f, 1f, 0f);
+
+            _targetGOs.Add(fave);
+            _favouriteCopy = fave;
+            _interactionIndex = _targetGOs.IndexOf(fave);
+
+        } else
+        {
+            //grab the first interaction target in our array for now
+            _interactionIndex = 0;
+        }
+
         SetInteractionTarget(_interactionIndex);
 
+    }
+
+    public void EndButtonCustomization()
+    {
+        _targetGOs.Remove(_favouriteCopy);
+        Destroy(_favouriteCopy.gameObject);
+        _favouriteCopy = null;
     }
 
     #region Interaction Changes

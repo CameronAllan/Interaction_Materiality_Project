@@ -28,6 +28,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
 
     [Header("Effect Library Vars")]
     [SerializeField] private Transform _effectsHolder;
+    [SerializeField] private EffectSelectUI _libraryEffectPrefab;
     [SerializeField] private List<EffectSelectUI> _activeEffectUIs;
 
     [Header("Tutorial Blurb Vars")]
@@ -53,6 +54,7 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
     {
         _submitButton.SetActive(true);
         _submitScreen.SetActive(false);
+        _scrollTargetButtons.SetActive(false);
         _showCustomizerButton.SetActive(true);
 
         ShowBlurb();
@@ -71,6 +73,11 @@ public class EffectTimelineUI : Singleton<EffectTimelineUI>
             {
                 _activeEffectUIs[x].gameObject.SetActive(true);
                 _activeEffectUIs[x].PopulateEffectSelect(allEffects[x], this);
+            } else
+            {
+                EffectSelectUI newUI = Instantiate(_libraryEffectPrefab, _effectsHolder).GetComponent<EffectSelectUI>();
+                newUI.PopulateEffectSelect(allEffects[x], this);
+                _activeEffectUIs.Add(newUI);
             }
         }
     }

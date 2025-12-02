@@ -12,6 +12,8 @@ public class EffectEntryUI : MonoBehaviour //IPointerClickHandler
     [SerializeField] private GameObject _selectionMarker;
     [SerializeField] private Transform _effectDisplay;
     [SerializeField] private TextMeshProUGUI _effectName;
+    [SerializeField] private Image _outlineBkg;
+    [SerializeField] private Image _effectIcon;
 
     [SerializeField] private UIDropZone _dropZone;
 
@@ -42,7 +44,10 @@ public class EffectEntryUI : MonoBehaviour //IPointerClickHandler
 
     private void DisplayEffect(Effect effect)
     {
-        _effectName.text = effect.name;
+        _effectName.text = effect.EffectName;
+        _outlineBkg.color = effect.EffectColor;
+        _effectIcon.sprite = effect.EffectIcon;
+
         _effectDisplay.gameObject.SetActive(true);
     }
 

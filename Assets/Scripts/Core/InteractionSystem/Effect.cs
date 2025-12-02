@@ -7,6 +7,7 @@ public abstract class Effect : MonoBehaviour
     [Header("Display Vars")]
     public string EffectName;
     public Sprite EffectIcon;
+    public Color EffectColor;
 
     [Header("Effect Vars")]
     //This is the base class for all of our different interaction effects
